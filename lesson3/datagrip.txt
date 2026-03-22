@@ -1,0 +1,81 @@
+CREATE TABLE users(
+    id serial primary key,
+    full_name varchar(100) not null,
+    email varchar(100) UNIQUE not null
+);
+
+CREATE TABLE category(
+    id serial primary key,
+    name varchar(30) not null
+);
+
+CREATE TABLE product(
+    id serial primary key,
+    name varchar(30) not null,
+    price numeric(10,2) not null,
+    category int references category(id),
+    quantity int default 0
+);
+
+CREATE TABLE orders(
+    id serial primary key,
+    users_id int references users(id),
+    data_order timestamp default now(),
+    status varchar(30) default 'new'
+);
+
+
+CREATE TABLE orders_item(
+    id serial primary key,
+    order_id int references orders(id),
+    quantity int not null,
+    product_id int references product(id),
+    price_at_purchase numeric(10, 2) NOT NULL
+);
+
+
+
+
+INSERT INTO users (full_name, email)
+    VALUES ('Иван Иванов', 'ivan@mail.ru'),
+    ('Анна Смирнова', 'anna_s@gmail.com'),
+    ('Дмитрий Кузнецов', 'dima_kuz@yandex.ru'),
+    ('Елена Соколова', 'elena.s@outlook.com'),
+    ('Алексей Попов', 'alex_popov@mail.ru'),
+    ('Мария Лебедева', 'masha_l@bk.ru');
+
+
+INSERT INTO category (name)
+    VALUES ('Электроника'),
+    ('Одежда'),
+    ('Дом и сад'),
+    ('Спорт'),
+    ('Книги'),
+    ('Красота');
+
+
+INSERT INTO product (name, price, category, quantity)
+    VALUES ('Смартфон X10', 45000.00, 1, 15),
+    ('Футболка хлопок', 1200.00, 2, 50),
+    ('Набор отверток', 2500.00, 3, 20),
+    ('Коврик для йоги', 1800.00, 4, 10),
+    ('Роман "Путь"', 800.00, 5, 100),
+    ('Крем для лица', 3200.00, 6, 30),
+    ('Ноутбук Pro 15', 85000.00, 1, 5);
+
+INSERT INTO orders (users_id, status)
+    VALUES (1, 'delivered'),
+    (2, 'shipped'),
+    (3, 'new'),
+    (1, 'new'),
+    (4, 'cancelled'),
+    (5, 'processing');
+
+INSERT INTO orders_item (order_id, product_id, quantity, price_at_purchase)
+    VALUES (1, 1, 1, 45000.00),
+    (1, 2, 2, 1200.00),
+    (2, 3, 1, 2500.00),
+    (3, 5, 3, 800.00),
+    (4, 7, 1, 85000.00),
+    (6, 4, 1, 1800.00),
+    (6, 6, 2, 3200.00);
